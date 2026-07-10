@@ -2,7 +2,7 @@ import { createServer } from 'http';
 import { server as wisp } from '@mercuryworkshop/wisp-js/server';
 
 const server = createServer((req, res) => {
-  // Respond with HTML for any standard non-WebSocket HTTP request
+  // cloak for non "upgrade" http sockets
   res.writeHead(200, { 'Content-Type': 'text/html' });
   res.end(`
     <!DOCTYPE html>
@@ -227,12 +227,12 @@ const server = createServer((req, res) => {
   `);
 });
 
-// Bind and route upgrade requests directly to the wisp-js handler
+// everything else with "upgrade" gets shoved to the wisp handler (if its a websocket)
 server.on('upgrade', (req, socket, head) => {
   wisp.routeRequest(req, socket, head);
 });
 
-// Start listening on port 8080
-server.listen(8080, () => {
-  console.log('Wisp server is actively listening on port 8080');
+// listen on 3000
+server.listen(3000, () => {
+  console.log('Wisp server is actively listening on port 3000');
 });
