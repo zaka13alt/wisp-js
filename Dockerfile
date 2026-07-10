@@ -1,17 +1,22 @@
-# Use the official Node.js Alpine base image
-FROM node:alpine
+FROM node:22-alpine AS base
 
-# Set the working directory inside the container
-WORKDIR /usr/src/app
+# 
+WORKDIR /app
 
-# Copy package.json first to leverage Docker layer caching
-COPY package.json ./
+# 
+COPY package*.json ./
 
-# Install the project dependencies
+# 
 RUN npm install
 
-# Copy the rest of your application files (including index.js)
+# 
 COPY . .
 
-# Run the application
+# 
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+
+ENTRYPOINT ["entrypoint.sh"]
+
 CMD ["node", "index.js"]
